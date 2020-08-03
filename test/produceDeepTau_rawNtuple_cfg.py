@@ -155,33 +155,6 @@ process.packedPFCandidates = packedPFCandidates.clone(
 )
 process.productionSequence += process.packedPFCandidates
 
-##process.dummyVertices = cms.EDProducer("EmptyVertexCollectionProducer")
-##process.productionSequence += process.dummyVertices
-##
-##process.dummyVertexCompositeCandidates = cms.EDProducer("EmptyVertexCompositeCandidateCollectionProducer")
-##process.productionSequence += process.dummyVertexCompositeCandidates
-##
-##from PhysicsTools.PatAlgos.slimming.lostTracks_cfi import lostTracks
-##process.lostTracks = lostTracks.clone(
-##    inputCandidates = cms.InputTag('particleFlowTmp'),
-##    secondaryVertices = cms.InputTag('dummyVertices'),
-##    kshorts = cms.InputTag('dummyVertexCompositeCandidates'),
-##    lambdas = cms.InputTag('dummyVertexCompositeCandidates'),
-##    primaryVertices = cms.InputTag(hlt_srcVertices),
-##    originalVertices = cms.InputTag(hlt_srcVertices),
-##    muons = cms.InputTag('muons1stStep'),
-##)
-##process.productionSequence += process.lostTracks
-##
-##process.dummyCaloJets = cms.EDProducer("EmptyCaloJetCollectionProducer")
-##process.productionSequence += process.dummyCaloJets
-##
-##from PhysicsTools.PatAlgos.slimming.isolatedTracks_cfi import isolatedTracks
-##process.isolatedTracks = isolatedTracks.clone(
-##    caloJets = cms.InputTag('dummyCaloJets')
-##)
-##process.productionSequence += process.isolatedTracks
-
 process.dummyIsolatedTracks = cms.EDProducer("EmptyPATIsolatedTrackCollectionProducer")
 process.productionSequence += process.dummyIsolatedTracks
 
@@ -227,10 +200,6 @@ process.productionSequence += process.makePatTaus
 ##)
 ##process.productionSequence += process.dumpPatTaus
 
-##process.load("PhysicsTools.PatAlgos.selectionLayer1.tauSelector_cfi")
-##process.selectedPatTaus.cut = cms.string("pt > 20.0 & abs(eta) < 2.4 & tauID('decayModeFindingNewDMs') & leadChargedHadrCand.isNonnull() & leadChargedHadrCand.pt > 5.0")
-##process.productionSequence += process.selectedPatTaus 
-
 process.selectedPatTaus = cms.EDProducer("MyPATTauSelector",
     src                 = cms.InputTag('patTaus'),
     min_pt              = cms.double(20.0),
@@ -247,11 +216,6 @@ process.selectedPatTaus = cms.EDProducer("MyPATTauSelector",
     invert              = cms.bool(False)
 )
 process.productionSequence += process.selectedPatTaus
-
-##process.dumpSelectedPatTaus = cms.EDAnalyzer("DumpPATTaus",
-##    src = cms.InputTag('selectedPatTaus')
-##)
-##process.productionSequence += process.dumpSelectedPatTaus
 
 process.load("PhysicsTools.PatAlgos.slimming.slimmedTaus_cfi")
 process.productionSequence += process.slimmedTaus
