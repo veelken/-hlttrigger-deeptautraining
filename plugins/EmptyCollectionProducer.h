@@ -1,5 +1,5 @@
-#ifndef HLTrigger_DeepTauTraining_EmptyParticleCollectionProducer_h
-#define HLTrigger_DeepTauTraining_EmptyParticleCollectionProducer_h
+#ifndef HLTrigger_DeepTauTraining_EmptyCollectionProducer_h
+#define HLTrigger_DeepTauTraining_EmptyCollectionProducer_h
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/global/EDProducer.h"
@@ -9,20 +9,20 @@
 #include "DataFormats/Common/interface/Handle.h"
 
 template <class T, class TCollection = std::vector<T>>
-class EmptyParticleCollectionProducer : public edm::global::EDProducer<>
+class EmptyCollectionProducer : public edm::global::EDProducer<>
 {
  public:
-  explicit EmptyParticleCollectionProducer(const edm::ParameterSet& cfg)
+  explicit EmptyCollectionProducer(const edm::ParameterSet& cfg)
   {
     produces<TCollection>();
   }
-  ~EmptyParticleCollectionProducer() override
+  ~EmptyCollectionProducer() override
   {}
 
   void produce(edm::StreamID, edm::Event& evt, const edm::EventSetup& es) const 
   {
-    std::unique_ptr<TCollection> particles(new TCollection());
-    evt.put(std::move(particles));
+    std::unique_ptr<TCollection> objects(new TCollection());
+    evt.put(std::move(objects));
   }
 };
 
