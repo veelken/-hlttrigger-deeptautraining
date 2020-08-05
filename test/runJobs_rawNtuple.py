@@ -36,7 +36,7 @@ run_hlt_isolation_maxDeltaZOptions = [ "primaryVertex" ]
 run_hlt_isolation_minTrackHits = [ 8 ]
 cfgFileName_original = "produceDeepTau_rawNtuple_cfg.py"
 
-version = "2020Aug03v3"
+version = "2020Aug05"
 
 configDir  = os.path.join("/home",       getpass.getuser(), "Phase2HLT/DeepTauTraining", version)
 outputDir  = os.path.join("/hdfs/local", getpass.getuser(), "Phase2HLT/DeepTauTraining", version, "raw-tuples")
