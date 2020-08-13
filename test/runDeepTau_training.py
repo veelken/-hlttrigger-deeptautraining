@@ -22,6 +22,9 @@ run_command('mkdir -p %s/odd-events-classified-by-DeepTau_even' % outputDir_root
 run_command('mkdir -p %s/odd-events-classified-by-DeepTau_odd' % outputDir_root_to_hdf)
 run_command('mkdir -p %s/odd-events-classified-by-chargedIsoPtSum' % outputDir_root_to_hdf)
 
+outputDir_models = os.path.join("/hdfs/local", getpass.getuser(), "Phase2HLT/DeepTauTraining", version_rawNtuples, version_training, "models")
+run_command('mkdir -p %s' % outputDir_models)
+
 outputDir_plots = os.path.join("/home", getpass.getuser(), "Phase2HLT/DeepTauTraining", version_rawNtuples, version_training, "plots")
 run_command('mkdir -p %s' % outputDir_plots)
 
@@ -34,23 +37,27 @@ print("Compiling _fill_grid_setup.py script...")
 ##run_command('source $CMSSW_BASE/src/HLTrigger/DeepTauTraining/test/compile_fill_grid_setup.sh')
 print(" Done.")
 
+outputFiles_root_to_hdf = {}
 models = {}
 for part in [ "even", "odd" ]:
     print("Running DeepTau training for '%s' sample..." % part)
+    outputFiles_root_to_hdf[part] = "%s_pt_20_eta_0.000.h5" % part
     models[part] = "DeepTauPhase2HLTv2%s" % part
-    command = 'source $CMSSW_BASE/src/HLTrigger/DeepTauTraining/test/runDeepTau_training.sh %s %s' % \
+    command = 'source $CMSSW_BASE/src/HLTrigger/DeepTauTraining/test/Training_p6_Phase2HLT_wrapper.sh %s %s' % \
       (os.path.join(outputDir_root_to_hdf, "%s-events" % part, outputFiles_root_to_hdf[part]), models[part])
     ##run_command(command)
+    ##run_command('cp $CMSSW_BASE/src/TauMLTools/Training/python/2017v2/%s_step1_final.h5 %s' % (models[part], outputDir_models))
     print(" Done.")
 #----------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------
 # CV: Convert DNN model to graph (.pb) format
 for part in [ "even", "odd" ]:
-    command = 'python $CMSSW_BASE/src/TauMLTools/Training/python/deploy_model.py --input $CMSSW_BASE/src/TauMLTools/Training/python/2017v2/%s_step1_final.hdf5' % \
-      (models[part])
+    command = 'python $CMSSW_BASE/src/TauMLTools/Training/python/deploy_model.py --input %s' % \
+      (os.path.join(outputDir_models, "%s_step1_final.h5" % models[part]))
     ##run_command(command)
     ##run_command('mv %s_step1_final.pb $CMSSW_BASE/src/TauMLTools/Training/python/2017v2/' % models[part])
+    ##run_command('cp $CMSSW_BASE/src/TauMLTools/Training/python/2017v2/%s_step1_final.pb %s' % (models[part], outputDir_models))
 #----------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------
@@ -69,14 +76,14 @@ for part_sample in [ "even", "odd" ]:
         ##run_command('rm -rf %s/testing-classified' % outputDir_scratch)
 
     # CV: Classify events by cutting on charged isolation pT-sum of the tau candidates for comparison
-    run_command('mkdir -p %s/testing-classified' % outputDir_scratch)
+    ##run_command('mkdir -p %s/testing-classified' % outputDir_scratch)
     command = 'python $CMSSW_BASE/src/TauMLTools/Training/python/apply_chargedIsoPtSum.py --input %s --output %s --chunk-size 1000 --batch-size 100 --max-queue-size 20' % \
       (os.path.join(outputDir_root_to_hdf, "%s-events" % part_sample), os.path.join(outputDir_scratch, "testing-classified"))
-    run_command(command)
+    ##run_command(command)
     key = '%s-events-classified-by-chargedIsoPtSum' % part_sample
     outputDirs_root_to_hdf_classified[key] = os.path.join(outputDir_root_to_hdf, "%s-events-classified-by-chargedIsoPtSum" % part_sample)
-    move_all_files_to_hdfs(os.path.join(outputDir_scratch, "testing-classified"), outputDirs_root_to_hdf_classified[key])
-    run_command('rm -rf %s/testing-classified' % outputDir_scratch)
+    ##move_all_files_to_hdfs(os.path.join(outputDir_scratch, "testing-classified"), outputDirs_root_to_hdf_classified[key])
+    ##run_command('rm -rf %s/testing-classified' % outputDir_scratch)
 #----------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------
@@ -115,3 +122,21 @@ for part_model in [ "even", "odd" ]:
        part_model)
     ##run_command(command)
 #----------------------------------------------------------------------------------------------------
+
+#----------------------------------------------------------------------------------------------------
+# CV: Split DeepTau model into three parts and convert DNN model to graph (.pb) format,
+#     as needed by CMSSW implementation of DeepTau tau ID discriminator in RecoTauTag/RecoTau/plugins/DeepTauId.cc
+for part in [ "even", "odd" ]:
+    print("Splitting DeepTau model for '%s' sample into 'core', 'inner', and 'outer' graphs..." % part)
+    command = 'source $CMSSW_BASE/src/HLTrigger/DeepTauTraining/test/SplitNetwork_Phase2HLT_wrapper.sh %s %s' % \
+      (os.path.join(outputDir_models, "%s_step1_final.h5" % models[part]), models[part])
+    run_command(command)
+    for graph in [ "inner", "outer", "core" ]: 
+        run_command('cp $CMSSW_BASE/src/TauMLTools/Training/python/2017v2/%s_step1_final_%s.h5 %s' % (models[part], graph, outputDir_models))
+        command = 'python $CMSSW_BASE/src/TauMLTools/Training/python/deploy_model.py --input %s' % \
+          (os.path.join(outputDir_models, "%s_step1_final_%s.h5" % (models[part], graph)))
+        run_command(command)
+        run_command('mv %s_step1_final_%s.pb $CMSSW_BASE/src/TauMLTools/Training/python/2017v2/' % (models[part], graph))
+        run_command('cp $CMSSW_BASE/src/TauMLTools/Training/python/2017v2/%s_step1_final_%s.pb %s' % (models[part], graph, outputDir_models))
+    print(" Done.")
+#-------------------------------------------------
