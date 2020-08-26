@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 import pandas
 import numpy as np

@@ -110,25 +110,39 @@ moduleName_slimmedTaus = "hltSlimmed%ss%s" % (hlt_pfTauLabel, hlt_pfTauSuffix)
 module_slimmedTaus = getattr(process, moduleName_slimmedTaus)
 module_slimmedTaus.src = cms.InputTag(src_patTaus)
 
-# CV: restrict debugging to DeepTau that was trained on even events (for simplicity)
+# CV: restrict debugging to DeepTau that was trained on even events (for easier debugging)
+moduleName_deepTau_odd = "hltDeep%sOdd%s" % (hlt_pfTauLabel, hlt_pfTauSuffix)
+deepTauSequence.remove(getattr(process, moduleName_deepTau_odd))
+moduleName_updatedPatTaus_odd = "hltUpdatedPat%ssOdd%s" % (hlt_pfTauLabel, hlt_pfTauSuffix)
+deepTauSequence.remove(getattr(process, moduleName_updatedPatTaus_odd))
+moduleName_updatedPatTaus = "hltUpdatedPat%ss%s" % (hlt_pfTauLabel, hlt_pfTauSuffix)
+deepTauSequence.remove(getattr(process, moduleName_updatedPatTaus))
 src_DeepTaus = 'hltUpdatedPat%ssEven%s' % (hlt_pfTauLabel, hlt_pfTauSuffix)
 
 # CV: enable debug output for DeepTauId module
 moduleName_deepTau_even = "hltDeep%sEven%s" % (hlt_pfTauLabel, hlt_pfTauSuffix)
 module_deepTau_even = getattr(process, moduleName_deepTau_even)
-module_deepTau_even.debug_level = cms.int32(2)
+module_deepTau_even.debug_level = cms.int32(1)
+module_deepTau_even.save_inputs = cms.bool(True)
 
-process.genMatchedDeepTaus = cms.EDFilter("PATTauAntiOverlapSelector",
-  src = cms.InputTag(src_DeepTaus),
+# CV: restrict DeepTau to generator-level matched taus (for easier debugging)
+src_slimmedTaus = "hltSlimmed%ss%s" % (hlt_pfTauLabel, hlt_pfTauSuffix)
+process.genMatchedSlimmedTaus = cms.EDFilter("PATTauAntiOverlapSelector",
+  src = cms.InputTag(src_slimmedTaus),
   srcNotToBeFiltered = cms.VInputTag('selectedGenHadTaus'),
   dRmin = cms.double(0.3),
   invert = cms.bool(True),
   filter = cms.bool(False)                                                          
 )
-process.analysisSequence += process.genMatchedDeepTaus
+deepTauSequence.replace(module_deepTau_even, process.genMatchedSlimmedTaus + module_deepTau_even)
+module_deepTau_even.taus = cms.InputTag('genMatchedSlimmedTaus')
+moduleName_updatedPatTaus_even = "hltUpdatedPat%ssEven%s" % (hlt_pfTauLabel, hlt_pfTauSuffix)
+module_updatedPatTaus_even = getattr(process, moduleName_updatedPatTaus_even)
+module_updatedPatTaus_even.src = cms.InputTag('genMatchedSlimmedTaus')
 
+src_updatedPatTaus_even = "hltUpdatedPat%ssEven%s" % (hlt_pfTauLabel, hlt_pfTauSuffix)
 process.testDeepTau = cms.EDAnalyzer("DeepTauTest",
-  taus = cms.InputTag('genMatchedDeepTaus'),
+  taus = cms.InputTag(src_updatedPatTaus_even),
   genEvent = cms.InputTag('generator'),
   genParticles = cms.InputTag('genParticles'),
   isMC = cms.bool(True)
