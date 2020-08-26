@@ -7,8 +7,8 @@ import time
 
 from HLTrigger.DeepTauTraining.run_command import *
 
-version_rawNtuples = "2020Aug05"
-version_training = "training_v2"
+version_rawNtuples = "2020Aug25wHGCalFix"
+version_training = "training_v1"
 
 outputDir_scratch = os.path.join("/home", getpass.getuser(), "temp/Phase2HLT_DeepTauTraining", version_rawNtuples, version_training)
 run_command('mkdir -p %s' % outputDir_scratch)
@@ -34,7 +34,7 @@ run_command('rm -rf %s/*' % outputDir_scratch)
 #----------------------------------------------------------------------------------------------------
 # CV: run actual DeepTau training
 print("Compiling _fill_grid_setup.py script...")
-##run_command('source $CMSSW_BASE/src/HLTrigger/DeepTauTraining/test/compile_fill_grid_setup.sh')
+run_command('source $CMSSW_BASE/src/HLTrigger/DeepTauTraining/test/compile_fill_grid_setup.sh')
 print(" Done.")
 
 outputFiles_root_to_hdf = {}
@@ -45,82 +45,20 @@ for part in [ "even", "odd" ]:
     models[part] = "DeepTauPhase2HLTv2%s" % part
     command = 'source $CMSSW_BASE/src/HLTrigger/DeepTauTraining/test/Training_p6_Phase2HLT_wrapper.sh %s %s' % \
       (os.path.join(outputDir_root_to_hdf, "%s-events" % part, outputFiles_root_to_hdf[part]), models[part])
-    ##run_command(command)
-    ##run_command('cp $CMSSW_BASE/src/TauMLTools/Training/python/2017v2/%s_step1_final.h5 %s' % (models[part], outputDir_models))
+    run_command(command)
+    run_command('cp $CMSSW_BASE/src/TauMLTools/Training/python/Phase2HLTv2/%s_step1_final.h5 %s' % (models[part], outputDir_models))
     print(" Done.")
 #----------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------
 # CV: Convert DNN model to graph (.pb) format
 for part in [ "even", "odd" ]:
+    run_command('rm %s_step1_final.pb' % models[part])
     command = 'python $CMSSW_BASE/src/TauMLTools/Training/python/deploy_model.py --input %s' % \
       (os.path.join(outputDir_models, "%s_step1_final.h5" % models[part]))
-    ##run_command(command)
-    ##run_command('mv %s_step1_final.pb $CMSSW_BASE/src/TauMLTools/Training/python/2017v2/' % models[part])
-    ##run_command('cp $CMSSW_BASE/src/TauMLTools/Training/python/2017v2/%s_step1_final.pb %s' % (models[part], outputDir_models))
-#----------------------------------------------------------------------------------------------------
-
-#----------------------------------------------------------------------------------------------------
-# CV: Classify tau candidates in events with even event numbers 
-#     using DeepTau model trained on events with even event numbers and vice versa
-outputDirs_root_to_hdf_classified = {}
-for part_sample in [ "even", "odd" ]:
-    for part_model in [ "even", "odd" ]:
-        ##run_command('mkdir -p %s/testing-classified' % outputDir_scratch)
-        command = 'python $CMSSW_BASE/src/TauMLTools/Training/python/apply_training.py --input %s --output %s --model $CMSSW_BASE/src/TauMLTools/Training/python/2017v2/%s_step1_final.pb --chunk-size 1000 --batch-size 100 --max-queue-size 20' % \
-          (os.path.join(outputDir_root_to_hdf, "%s-events" % part_sample), os.path.join(outputDir_scratch, "testing-classified"), models[part])
-        ##run_command(command)
-        key = '%s-events-classified-by-DeepTau_%s' % (part_sample, part_model)
-        outputDirs_root_to_hdf_classified[key] = os.path.join(outputDir_root_to_hdf, "%s-events-classified-by-DeepTau_%s" % (part_sample, part_model))
-        ##move_all_files_to_hdfs(os.path.join(outputDir_scratch, "testing-classified"), outputDirs_root_to_hdf_classified[key])
-        ##run_command('rm -rf %s/testing-classified' % outputDir_scratch)
-
-    # CV: Classify events by cutting on charged isolation pT-sum of the tau candidates for comparison
-    ##run_command('mkdir -p %s/testing-classified' % outputDir_scratch)
-    command = 'python $CMSSW_BASE/src/TauMLTools/Training/python/apply_chargedIsoPtSum.py --input %s --output %s --chunk-size 1000 --batch-size 100 --max-queue-size 20' % \
-      (os.path.join(outputDir_root_to_hdf, "%s-events" % part_sample), os.path.join(outputDir_scratch, "testing-classified"))
-    ##run_command(command)
-    key = '%s-events-classified-by-chargedIsoPtSum' % part_sample
-    outputDirs_root_to_hdf_classified[key] = os.path.join(outputDir_root_to_hdf, "%s-events-classified-by-chargedIsoPtSum" % part_sample)
-    ##move_all_files_to_hdfs(os.path.join(outputDir_scratch, "testing-classified"), outputDirs_root_to_hdf_classified[key])
-    ##run_command('rm -rf %s/testing-classified' % outputDir_scratch)
-#----------------------------------------------------------------------------------------------------
-
-#----------------------------------------------------------------------------------------------------
-# CV: Make DeepTau performance plots
-#
-#    1) Overtraining
-for part_model in [ "even", "odd" ]:
-    part_sample_train = part_model
-    part_sample_test = None
-    if part_model == "even":
-        part_sample_test = "odd"
-    elif part_model == "odd":
-        part_sample_test = "even"
-    else:
-        raise ValueError("Invalid parameter 'part_model' = '%s' !!" % part_model)
-    key_train = '%s-events-classified-by-DeepTau_%s' % (part_sample_train, part_model)
-    key_test = '%s-events-classified-by-DeepTau_%s' % (part_sample_test, part_model)
-    command = 'python $CMSSW_BASE/src/TauMLTools/Training/python/evaluate_performance.py --input-taus %s --input-other %s --other-type jet --deep-results %s --deep-results-label "Train" --prev-deep-results %s --prev-deep-results-label "Test" --output %s/rocCurve_DeepTau_%s_test_vs_train.pdf' % \
-      (os.path.join(outputDir_root_to_hdf, "%s-events" % part_sample, outputFiles_root_to_hdf[part_sample]), 
-       os.path.join(outputDir_root_to_hdf, "%s-events" % part_sample, outputFiles_root_to_hdf[part_sample]),
-       os.path.join(outputDirs_root_to_hdf_classified[key_train], outputFiles_root_to_hdf[part_sample]),
-       os.path.join(outputDirs_root_to_hdf_classified[key_test], outputFiles_root_to_hdf[part_sample]),
-       outputDir_plots,
-       part_model)
-    ##run_command(command)
-#
-#    2) Performance of DeepTau compared to charged isolation pT-sum
-    key_DeepTau = '%s-events-classified-by-DeepTau_%s' % (part_sample_test, part_model)
-    key_chargedIsoPtSum = '%s-events-classified-by-chargedIsoPtSum' % part_sample_test
-    command = 'python $CMSSW_BASE/src/TauMLTools/Training/python/evaluate_performance.py --input-taus %s --input-other %s --other-type jet --deep-results %s --deep-results-label "DeepTau" --prev-deep-results %s --prev-deep-results-label "chargedIsoPtSum" --output %s/rocCurve_DeepTau_%s_vs_chargedIsoPtSum.pdf' % \
-      (os.path.join(outputDir_root_to_hdf, "%s-events" % part_sample, outputFiles_root_to_hdf[part_sample]), 
-       os.path.join(outputDir_root_to_hdf, "%s-events" % part_sample, outputFiles_root_to_hdf[part_sample]),
-       os.path.join(outputDirs_root_to_hdf_classified[key_DeepTau], outputFiles_root_to_hdf[part_sample]),
-       os.path.join(outputDirs_root_to_hdf_classified[key_chargedIsoPtSum], outputFiles_root_to_hdf[part_sample]),
-       outputDir_plots,
-       part_model)
-    ##run_command(command)
+    run_command(command)
+    run_command('mv %s_step1_final.pb $CMSSW_BASE/src/TauMLTools/Training/python/Phase2HLTv2/' % models[part])
+    run_command('cp $CMSSW_BASE/src/TauMLTools/Training/python/Phase2HLTv2/%s_step1_final.pb %s' % (models[part], outputDir_models))
 #----------------------------------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------------------------------
@@ -132,11 +70,64 @@ for part in [ "even", "odd" ]:
       (os.path.join(outputDir_models, "%s_step1_final.h5" % models[part]), models[part])
     run_command(command)
     for graph in [ "inner", "outer", "core" ]: 
-        run_command('cp $CMSSW_BASE/src/TauMLTools/Training/python/2017v2/%s_step1_final_%s.h5 %s' % (models[part], graph, outputDir_models))
+        run_command('cp $CMSSW_BASE/src/TauMLTools/Training/python/Phase2HLTv2/%s_step1_final_%s.h5 %s' % (models[part], graph, outputDir_models))
         command = 'python $CMSSW_BASE/src/TauMLTools/Training/python/deploy_model.py --input %s' % \
           (os.path.join(outputDir_models, "%s_step1_final_%s.h5" % (models[part], graph)))
         run_command(command)
-        run_command('mv %s_step1_final_%s.pb $CMSSW_BASE/src/TauMLTools/Training/python/2017v2/' % (models[part], graph))
-        run_command('cp $CMSSW_BASE/src/TauMLTools/Training/python/2017v2/%s_step1_final_%s.pb %s' % (models[part], graph, outputDir_models))
+        run_command('mv %s_step1_final_%s.pb $CMSSW_BASE/src/TauMLTools/Training/python/Phase2HLTv2/' % (models[part], graph))
+        run_command('cp $CMSSW_BASE/src/TauMLTools/Training/python/Phase2HLTv2/%s_step1_final_%s.pb %s' % (models[part], graph, outputDir_models))
     print(" Done.")
 #-------------------------------------------------
+
+#----------------------------------------------------------------------------------------------------
+# CV: Classify tau candidates in events with even event numbers 
+#     using DeepTau model trained on events with even event numbers and vice versa
+outputDirs_root_to_hdf_classified = {}
+for part_sample in [ "even", "odd" ]:
+    for part_model in [ "even", "odd" ]:
+        run_command('mkdir -p %s/testing-classified' % outputDir_scratch)
+        command = 'python $CMSSW_BASE/src/TauMLTools/Training/python/apply_training.py --input %s --output %s --model $CMSSW_BASE/src/TauMLTools/Training/python/Phase2HLTv2/%s_step1_final.pb --chunk-size 1000 --batch-size 100 --max-queue-size 20' % \
+          (os.path.join(outputDir_root_to_hdf, "%s-events" % part_sample), os.path.join(outputDir_scratch, "testing-classified"), models[part_model])
+        run_command(command)
+        key = '%s-events-classified-by-DeepTau_%s' % (part_sample, part_model)
+        outputDirs_root_to_hdf_classified[key] = os.path.join(outputDir_root_to_hdf, "%s-events-classified-by-DeepTau_%s" % (part_sample, part_model))
+        move_all_files_to_hdfs(os.path.join(outputDir_scratch, "testing-classified"), outputDirs_root_to_hdf_classified[key])
+        run_command('rm -rf %s/testing-classified' % outputDir_scratch)
+#----------------------------------------------------------------------------------------------------
+
+#----------------------------------------------------------------------------------------------------
+# CV: Make plot of test vs train performance ROC curve
+for part_sample in [ "even", "odd" ]:
+    part_model_train = part_sample
+    part_model_test = None
+    if part_sample == "even":
+        part_model_test = "odd"
+    elif part_sample == "odd":
+        part_model_test = "even"
+    else:
+        raise ValueError("Invalid parameter 'part_sample' = '%s' !!" % part_sample)
+    key_train = '%s-events-classified-by-DeepTau_%s' % (part_sample, part_model_train)
+    key_test = '%s-events-classified-by-DeepTau_%s' % (part_sample, part_model_test)
+    command = 'python3 $CMSSW_BASE/src/TauMLTools/Training/python/evaluate_performance.py --input-taus %s --other-type jet --deep-results %s --deep-results-label "Train" --prev-deep-results %s --prev-deep-results-label "Test" --output %s/rocCurve_DeepTau_test_vs_train_%s.pdf --setup $CMSSW_BASE/src/TauMLTools/Training/python/plot_setups/overtraining.py' % \
+      (os.path.join(outputDir_root_to_hdf, "%s-events" % part_sample, outputFiles_root_to_hdf[part_sample]), 
+       outputDirs_root_to_hdf_classified[key_train], 
+       outputDirs_root_to_hdf_classified[key_test],
+       outputDir_plots, part_sample)
+    run_command(command)
+
+# CV: Make plot of DeepTau vs chargedIsoPtSum performance ROC curve (for test sample)
+for part_sample in [ "even", "odd" ]:
+    part_model = None
+    if part_sample == "even":
+        part_model = "odd"
+    elif part_sample == "odd":
+        part_model = "even"
+    else:
+        raise ValueError("Invalid parameter 'part_sample' = '%s' !!" % part_sample)
+    key_DeepTau = '%s-events-classified-by-DeepTau_%s' % (part_sample, part_model)
+    command = 'python3 $CMSSW_BASE/src/TauMLTools/Training/python/evaluate_performance.py --input-taus %s --other-type jet --deep-results %s --output %s/rocCurve_DeepTau_vs_chargedIsoPtSum_%s.pdf --setup $CMSSW_BASE/src/TauMLTools/Training/python/plot_setups/phase2_hlt.py' % \
+      (os.path.join(outputDir_root_to_hdf, "%s-events" % part_sample, outputFiles_root_to_hdf[part_sample]), 
+       outputDirs_root_to_hdf_classified[key_DeepTau], 
+       outputDir_plots, part_sample)
+    run_command(command)
+#----------------------------------------------------------------------------------------------------

@@ -71,7 +71,7 @@ tauTupleProducer_requireGenMatch = None
 if processName == "qqH_htt":
     tauTupleProducer_requireGenMatch = True
     print("Running 'TauTupleProducer' module with gen-matching enabled.")
-elif processName in [ "minbias", "qcd_pt30to50", "qcd_pt50to80", "qcd_pt80to120", "qcd_pt120to170", "qcd_pt170to300", "qcd_ptGt300" ]:
+elif processName in [ "minbias", "qcd_pt30to50", "qcd_pt50to80", "qcd_pt80to120", "qcd_pt120to170", "qcd_pt170to300", "qcd_ptGt300", "dy_mass10to50", "dy_massGt50", "w" ]:
     tauTupleProducer_requireGenMatch = False
     print("Running 'TauTupleProducer' module with gen-matching disabled.")
 else:
@@ -184,6 +184,10 @@ process.patTaus.tauIDSources = cms.PSet()
 from PhysicsTools.PatAlgos.producersLayer1.tauProducer_cfi import singleID, containerID
 singleID(process.patTaus.tauIDSources, 'hlt%sDiscriminationByDecayModeFinding%s' % (hlt_pfTauLabel, hlt_pfTauSuffix), "decayModeFinding")
 singleID(process.patTaus.tauIDSources, 'hlt%sDiscriminationByDecayModeFindingNewDMs%s' % (hlt_pfTauLabel, hlt_pfTauSuffix), "decayModeFindingNewDMs")
+singleID(process.patTaus.tauIDSources, 'hltSelected%sChargedIsoPtSum%s' % (hlt_pfTauLabel, hlt_pfTauSuffix), "chargedIsoPtSumHGCalFix")
+singleID(process.patTaus.tauIDSources, 'hltSelected%sNeutralIsoPtSum%s' % (hlt_pfTauLabel, hlt_pfTauSuffix), "neutralIsoPtSumHGCalFix")
+singleID(process.patTaus.tauIDSources, 'hltSelected%sChargedIsoPtSumdR03%s' % (hlt_pfTauLabel, hlt_pfTauSuffix), "chargedIsoPtSumdR03HGCalFix")
+singleID(process.patTaus.tauIDSources, 'hltSelected%sNeutralIsoPtSumdR03%s' % (hlt_pfTauLabel, hlt_pfTauSuffix), "neutralIsoPtSumdR03HGCalFix")
 containerID(process.patTaus.tauIDSources, 'hlt%sBasicDiscriminators%s' % (hlt_pfTauLabel, hlt_pfTauSuffix), "IDdefinitions", [
     [ "chargedIsoPtSum", "ChargedIsoPtSum" ],
     [ "neutralIsoPtSum", "NeutralIsoPtSum" ],
@@ -192,6 +196,15 @@ containerID(process.patTaus.tauIDSources, 'hlt%sBasicDiscriminators%s' % (hlt_pf
     [ "footprintCorrection", "TauFootprintCorrection" ],
     [ "photonPtSumOutsideSignalCone", "PhotonPtSumOutsideSignalCone" ],
     [ "byCombinedIsolationDeltaBetaCorrRaw3Hits", "ByRawCombinedIsolationDBSumPtCorr3Hits" ]
+])
+containerID(process.patTaus.tauIDSources, 'hlt%sBasicDiscriminatorsdR03%s' % (hlt_pfTauLabel, hlt_pfTauSuffix), "IDdefinitions", [
+    [ "chargedIsoPtSumdR03", "ChargedIsoPtSum" ],
+    [ "neutralIsoPtSumdR03", "NeutralIsoPtSum" ],
+    [ "puCorrPtSumdR03", "PUcorrPtSum" ],
+    [ "neutralIsoPtSumWeightdR03", "NeutralIsoPtSumWeight" ],
+    [ "footprintCorrectiondR03", "TauFootprintCorrection" ],
+    [ "photonPtSumOutsideSignalConedR03", "PhotonPtSumOutsideSignalCone" ],
+    [ "byCombinedIsolationDeltaBetaCorrRaw3HitsdR03", "ByRawCombinedIsolationDBSumPtCorr3Hits" ]
 ])
 process.productionSequence += process.makePatTaus
 
@@ -206,6 +219,7 @@ process.selectedPatTaus = cms.EDProducer("MyPATTauSelector",
     max_pt              = cms.double(-1.),
     min_absEta          = cms.double(-1.),
     max_absEta          = cms.double(2.4),
+    decayModes          = cms.vint(0, 1, 2, 10, 11),
     min_leadTrackPt     = cms.double(5.0),
     max_leadTrackPt     = cms.double(-1.),
     tauID_relChargedIso = cms.string("chargedIsoPtSum"),
