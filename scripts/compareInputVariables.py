@@ -152,8 +152,8 @@ def compVars(key, vars_hdf5, varNames_hdf5, vars_cmssw, varNames_cmssw):
         diff = abs(var_hdf5 - var_cmssw)
         mean = 0.5*(abs(var_hdf5) + abs(var_cmssw))
         if diff > (reporting_threshold*mean):
-            label_hdf5 = "(%s)" % varNames_hdf5[var]
-            label_cmssw = "(%s)" % varNames_cmssw[var]
+            label_hdf5 = "(%s)" % varNames_hdf5[idx_var]
+            label_cmssw = "(%s)" % varNames_cmssw[idx_var]
             print("Mismatch in variable #%i: hdf5 %s = %1.4f, CMSSW %s = %1.4f" % (idx_var, label_hdf5, var_hdf5, label_cmssw, var_cmssw))
     print(" Done.")
 
@@ -204,7 +204,7 @@ def compVars_grid(key, vars_hdf5, varNames_hdf5, vars_cmssw, varNames_cmssw):
                     label_cmssw = "(%s)" % varNames_cmssw[idx_var]
                     eta = idx_eta - n_eta/2
                     phi = idx_phi - n_phi/2
-                    print("Mismatch in variable #%i @ ( eta=%i, phi=%i ): hdf5 %s = %1.4f, CMSSW %s = %1.4f" % (idx_var, eta, phi, label_hdf5, var_hdf5, label_cmssw, var_cmssw))
+                    print("Mismatch in variable #%i @ (eta=%i, phi=%i): hdf5 %s = %1.4f, CMSSW %s = %1.4f" % (idx_var, eta, phi, label_hdf5, var_hdf5, label_cmssw, var_cmssw))
     print(" Done.")
 
 compVars_grid("input_inner_egamma",  inputVariables_hdf5, inputVariableNames_egamma_hdf5,  inputVariables_cmssw, inputVariableNames_egamma_cmssw)

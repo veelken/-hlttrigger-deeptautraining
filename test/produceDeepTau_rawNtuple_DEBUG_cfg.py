@@ -18,9 +18,9 @@ process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
         'file:/home/veelken/Phase2HLT/CMSSW_11_1_0/src/HLTrigger/Phase2HLTPFTaus/test/step3_RAW2DIGI_RECO.root'
     ),
-    eventsToProcess = cms.untracked.VEventRange(
-        '1:128:18149'
-    ) 
+    ##eventsToProcess = cms.untracked.VEventRange(
+    ##    '1:128:18149'
+    ##) 
 )
 
 ##inputFilePath = '/hdfs/cms/store/user/rdewanje/VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5/HLTConfig_VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5_wOfflineVtx_wDeepTau3/'
@@ -97,9 +97,8 @@ process.productionSequence += process.tauGenJetsSelectorAllHadrons
 
 process.selectedGenHadTaus = cms.EDFilter("GenJetSelector",
   src = cms.InputTag('tauGenJetsSelectorAllHadrons'),
-  ##cut = cms.string('pt > 20. & abs(eta) < 2.4'),
-  cut = cms.string('pt > 20. & abs(eta) < 0.6'),
-  filter = cms.bool(True)
+  cut = cms.string('pt > 20. & abs(eta) < 2.4'),
+  filter = cms.bool(False)
 )
 process.productionSequence += process.selectedGenHadTaus
 
@@ -191,8 +190,26 @@ containerID(process.patTaus.tauIDSources, 'hlt%sBasicDiscriminators%s' % (hlt_pf
 ##])
 process.productionSequence += process.makePatTaus
 
+process.selectedPatTaus = cms.EDProducer("MyPATTauSelector",
+  src                 = cms.InputTag('patTaus'),
+  min_pt              = cms.double(20.0),
+  max_pt              = cms.double(-1.),
+  min_absEta          = cms.double(-1.),
+  max_absEta          = cms.double(2.4),
+  decayModes          = cms.vint32(0, 1, 2, 10, 11),
+  min_leadTrackPt     = cms.double(1.0),
+  max_leadTrackPt     = cms.double(-1.),
+  tauID_relChargedIso = cms.string("chargedIsoPtSum"),
+  min_relChargedIso   = cms.double(-1.),
+  max_relChargedIso   = cms.double(-1.),
+  min_absChargedIso   = cms.double(-1.),
+  max_absChargedIso   = cms.double(-1.),
+  invert              = cms.bool(False)
+)
+process.productionSequence += process.selectedPatTaus
+
 process.genMatchedPatTaus = cms.EDFilter("PATTauAntiOverlapSelector",
-  src = cms.InputTag('patTaus'),
+  src = cms.InputTag('selectedPatTaus'),
   srcNotToBeFiltered = cms.VInputTag('selectedGenHadTaus'),
   dRmin = cms.double(0.3),
   invert = cms.bool(True),
@@ -205,17 +222,17 @@ process.load("PhysicsTools.PatAlgos.slimming.slimmedTaus_cfi")
 process.slimmedTaus.src = cms.InputTag('genMatchedPatTaus')
 process.productionSequence += process.slimmedTaus
 
-process.dumpPFTaus = cms.EDAnalyzer("DumpRecoPFTaus",
-  src = cms.InputTag(hlt_srcPFTaus),
-  src_sumChargedIso = cms.InputTag('hltSelected%sChargedIsoPtSum%s' % (hlt_pfTauLabel, hlt_pfTauSuffix)),
-  src_discriminators = cms.VInputTag()
-)
-process.productionSequence += process.dumpPFTaus
-
-process.dumpPatTaus = cms.EDAnalyzer("DumpPATTaus",
-  src = cms.InputTag('slimmedTaus')
-)
-process.productionSequence += process.dumpPatTaus
+##process.dumpPFTaus = cms.EDAnalyzer("DumpRecoPFTaus",
+##  src = cms.InputTag(hlt_srcPFTaus),
+##  src_sumChargedIso = cms.InputTag('hltSelected%sChargedIsoPtSum%s' % (hlt_pfTauLabel, hlt_pfTauSuffix)),
+##  src_discriminators = cms.VInputTag()
+##)
+##process.productionSequence += process.dumpPFTaus
+##
+##process.dumpPatTaus = cms.EDAnalyzer("DumpPATTaus",
+##  src = cms.InputTag('slimmedTaus')
+##)
+##process.productionSequence += process.dumpPatTaus
 
 ##process.dumpPFCandidates = cms.EDAnalyzer("DumpRecoPFCandidates",
 ##  src = cms.InputTag('particleFlowTmp'),
@@ -266,4 +283,8 @@ process.p = cms.Path(process.productionSequence)
 
 process.TFileService = cms.Service('TFileService', 
     fileName = cms.string(outputFileName) 
+)
+
+process.options = cms.untracked.PSet(
+    wantSummary = cms.untracked.bool(True)
 )
