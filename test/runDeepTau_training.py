@@ -7,7 +7,7 @@ import time
 
 from HLTrigger.DeepTauTraining.run_command import *
 
-version_rawNtuples = "2020Aug25wHGCalFix"
+version_rawNtuples = "2020Sep01wHGCalFix"
 version_training = "training_v1"
 
 outputDir_scratch = os.path.join("/home", getpass.getuser(), "temp/Phase2HLT_DeepTauTraining", version_rawNtuples, version_training)

@@ -9,8 +9,8 @@ signal_and_background_samples = {
   'qqH_htt' : {
     'samples' : {
       'offlinePrimaryVertices' : { 
-        'inputFilePath' : '/hdfs/cms/store/user/rdewanje/VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5/HLTConfig_VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5_wOfflineVtx_wDeepTau3/',
-        'numEvents' : 300000
+        'inputFilePath' : '/hdfs/cms/store/user/rdewanje/VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5/HLTConfig_VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5_wOfflineVtx_wDeepTau4/',
+        'numEvents' : 299716
       }
     },
     'numJobs' : 15
@@ -18,8 +18,8 @@ signal_and_background_samples = {
   'minbias' : {
     'samples' : {
       'offlinePrimaryVertices' : { 
-        'inputFilePath' : '/hdfs/cms/store/user/rdewanje/MinBias_TuneCP5_14TeV-pythia8/HLTConfig_MinBias_TuneCP5_14TeV-pythia8_wOfflineVtx_wDeepTau3/',
-        'numEvents' : 999469
+        'inputFilePath' : '/hdfs/cms/store/user/rdewanje/MinBias_TuneCP5_14TeV-pythia8/HLTConfig_MinBias_TuneCP5_14TeV-pythia8_wOfflineVtx_wDeepTau4/',
+        'numEvents' : 995044
       }
     },
     'numJobs' : 50
@@ -27,7 +27,7 @@ signal_and_background_samples = {
   'qcd_pt30to50' : {
     'samples' : {
       'offlinePrimaryVertices' : { 
-        'inputFilePath' : '/hdfs/cms/store/user/rdewanje/QCD_Pt_30to50_TuneCP5_14TeV_pythia8/HLTConfig_QCD_Pt_30to50_TuneCP5_14TeV_pythia8_wOfflineVtx_wDeepTau3/',
+        'inputFilePath' : '/hdfs/cms/store/user/rdewanje/QCD_Pt_30to50_TuneCP5_14TeV_pythia8/HLTConfig_QCD_Pt_30to50_TuneCP5_14TeV_pythia8_wOfflineVtx_wDeepTau4/',
         'numEvents' : 498662
       }
     },
@@ -36,7 +36,7 @@ signal_and_background_samples = {
   'qcd_pt50to80' : {
     'samples' : {
       'offlinePrimaryVertices' : { 
-        'inputFilePath' : '/hdfs/cms/store/user/rdewanje/QCD_Pt_50to80_TuneCP5_14TeV_pythia8/HLTConfig_QCD_Pt_50to80_TuneCP5_14TeV_pythia8_wOfflineVtx_wDeepTau3/',
+        'inputFilePath' : '/hdfs/cms/store/user/rdewanje/QCD_Pt_50to80_TuneCP5_14TeV_pythia8/HLTConfig_QCD_Pt_50to80_TuneCP5_14TeV_pythia8_wOfflineVtx_wDeepTau4/',
         'numEvents' : 300000
       }
     },
@@ -45,7 +45,7 @@ signal_and_background_samples = {
   'qcd_pt80to120' : {
     'samples' : {
       'offlinePrimaryVertices' : { 
-        'inputFilePath' : '/hdfs/cms/store/user/rdewanje/QCD_Pt_80to120_TuneCP5_14TeV_pythia8/HLTConfig_QCD_Pt_80to120_TuneCP5_14TeV_pythia8_wOfflineVtx_wDeepTau3/',
+        'inputFilePath' : '/hdfs/cms/store/user/rdewanje/QCD_Pt_80to120_TuneCP5_14TeV_pythia8/HLTConfig_QCD_Pt_80to120_TuneCP5_14TeV_pythia8_wOfflineVtx_wDeepTau4/',
         'numEvents' : 100000
       }
     },
@@ -54,7 +54,7 @@ signal_and_background_samples = {
   'qcd_pt120to170' : {
     'samples' : {
       'offlinePrimaryVertices' : { 
-        'inputFilePath' : '/hdfs/cms/store/user/rdewanje/QCD_Pt_120to170_TuneCP5_14TeV_pythia8/HLTConfig_QCD_Pt_120to170_TuneCP5_14TeV_pythia8_wOfflineVtx_wDeepTau3/',
+        'inputFilePath' : '/hdfs/cms/store/user/rdewanje/QCD_Pt_120to170_TuneCP5_14TeV_pythia8/HLTConfig_QCD_Pt_120to170_TuneCP5_14TeV_pythia8_wOfflineVtx_wDeepTau4/',
         'numEvents' : 50000
       }
     },
@@ -63,16 +63,16 @@ signal_and_background_samples = {
   'qcd_pt170to300' : {
     'samples' : {
       'offlinePrimaryVertices' : { 
-        'inputFilePath' : '/hdfs/cms/store/user/rdewanje/QCD_Pt_170to300_TuneCP5_14TeV_pythia8/HLTConfig_QCD_Pt_170to300_TuneCP5_14TeV_pythia8_wOfflineVtx_wDeepTau3/',
+        'inputFilePath' : '/hdfs/cms/store/user/rdewanje/QCD_Pt_170to300_TuneCP5_14TeV_pythia8/HLTConfig_QCD_Pt_170to300_TuneCP5_14TeV_pythia8_wOfflineVtx_wDeepTau4/',
         'numEvents' : 50000
       }
     },
     'numJobs' : 3
-  }
+  },
   'dy_mass10to50' : {
     'samples' : {
       'offlinePrimaryVertices' : { 
-        'inputFilePath' : '/hdfs/cms/store/user/rdewanje/DYJetsToLL_M-10to50_TuneCP5_14TeV-madgraphMLM-pythia8/HLTConfig_DYJetsToLL_M-10to50_TuneCP5_14TeV-madgraphMLM-pythia8_wOfflineVtx_wDeepTau3/',
+        'inputFilePath' : '/hdfs/cms/store/user/rdewanje/DYJetsToLL_M-10to50_TuneCP5_14TeV-madgraphMLM-pythia8/HLTConfig_DYJetsToLL_M-10to50_TuneCP5_14TeV-madgraphMLM-pythia8_wOfflineVtx_wDeepTau4/',
         'numEvents' : 96923
       }
     },
@@ -81,7 +81,7 @@ signal_and_background_samples = {
   'dy_massGt50' : {
     'samples' : {
       'offlinePrimaryVertices' : { 
-        'inputFilePath' : '/hdfs/cms/store/user/rdewanje/DYToLL_M-50_TuneCP5_14TeV-pythia8/HLTConfig_DYToLL_M-50_TuneCP5_14TeV-pythia8_wOfflineVtx_wDeepTau3/',
+        'inputFilePath' : '/hdfs/cms/store/user/rdewanje/DYToLL_M-50_TuneCP5_14TeV-pythia8/HLTConfig_DYToLL_M-50_TuneCP5_14TeV-pythia8_wOfflineVtx_wDeepTau4/',
         'numEvents' : 10000
       }
     },
@@ -90,8 +90,8 @@ signal_and_background_samples = {
   'w' : {
     'samples' : {
       'offlinePrimaryVertices' : { 
-        'inputFilePath' : '/hdfs/cms/store/user/rdewanje/WJetsToLNu_TuneCP5_14TeV-amcatnloFXFX-pythia8/HLTConfig_WJetsToLNu_TuneCP5_14TeV-amcatnloFXFX-pythia8_wOfflineVtx_wDeepTau3/',
-        'numEvents' : 85778
+        'inputFilePath' : '/hdfs/cms/store/user/rdewanje/WJetsToLNu_TuneCP5_14TeV-amcatnloFXFX-pythia8/HLTConfig_WJetsToLNu_TuneCP5_14TeV-amcatnloFXFX-pythia8_wOfflineVtx_wDeepTau4/',
+        'numEvents' : 85397
       }
     },
     'numJobs' : 5
@@ -108,7 +108,7 @@ run_hlt_isolation_maxDeltaZOptions = [ "primaryVertex" ]
 run_hlt_isolation_minTrackHits = [ 8 ]
 cfgFileName_original = "produceDeepTau_rawNtuple_cfg.py"
 
-version = "2020Aug25wHGCalFix"
+version = "2020Sep01wHGCalFix"
 
 configDir  = os.path.join("/home",       getpass.getuser(), "Phase2HLT/DeepTauTraining", version)
 outputDir  = os.path.join("/hdfs/local", getpass.getuser(), "Phase2HLT/DeepTauTraining", version, "raw-tuples")

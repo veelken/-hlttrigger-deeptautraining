@@ -19,13 +19,13 @@ process.source = cms.Source("PoolSource",
         'file:/home/veelken/Phase2HLT/CMSSW_11_1_0/src/HLTrigger/Phase2HLTPFTaus/test/step3_RAW2DIGI_RECO.root'
     ),
     ##eventsToProcess = cms.untracked.VEventRange(
-    ##    '1:128:18149'
+    ##    '1:128:18039'
     ##) 
 )
 
 ##inputFilePath = '/hdfs/cms/store/user/rdewanje/VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5/HLTConfig_VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5_wOfflineVtx_wDeepTau3/'
 inputFilePath = None
-inputFileNames = [ 'file:/hdfs/cms/store/user/rdewanje/VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5/HLTConfig_VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5_wOfflineVtx_wDeepTau3/200819_143348/0000/step3_RAW2DIGI_RECO_1.root' ]
+inputFileNames = [ 'file:/hdfs/cms/store/user/rdewanje/VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5/HLTConfig_VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5_wOfflineVtx_wDeepTau4/200826_185528/0000/step3_RAW2DIGI_RECO_1.root' ]
 processName = "qqH_htt"
 hlt_srcVertices = 'offlinePrimaryVertices'
 hlt_algorithm = "hps"
@@ -166,10 +166,10 @@ process.patTaus.tauIDSources = cms.PSet()
 from PhysicsTools.PatAlgos.producersLayer1.tauProducer_cfi import singleID, containerID
 singleID(process.patTaus.tauIDSources, 'hlt%sDiscriminationByDecayModeFinding%s' % (hlt_pfTauLabel, hlt_pfTauSuffix), "decayModeFinding")
 singleID(process.patTaus.tauIDSources, 'hlt%sDiscriminationByDecayModeFindingNewDMs%s' % (hlt_pfTauLabel, hlt_pfTauSuffix), "decayModeFindingNewDMs")
-singleID(process.patTaus.tauIDSources, 'hltSelected%sChargedIsoPtSum%s' % (hlt_pfTauLabel, hlt_pfTauSuffix), "chargedIsoPtSumHGCalFix")
-singleID(process.patTaus.tauIDSources, 'hltSelected%sNeutralIsoPtSum%s' % (hlt_pfTauLabel, hlt_pfTauSuffix), "neutralIsoPtSumHGCalFix")
-##singleID(process.patTaus.tauIDSources, 'hltSelected%sChargedIsoPtSumdR03%s' % (hlt_pfTauLabel, hlt_pfTauSuffix), "chargedIsoPtSumdR03HGCalFix")
-##singleID(process.patTaus.tauIDSources, 'hltSelected%sNeutralIsoPtSumdR03%s' % (hlt_pfTauLabel, hlt_pfTauSuffix), "neutralIsoPtSumdR03HGCalFix")
+singleID(process.patTaus.tauIDSources, 'hltSelected%sChargedIsoPtSumHGCalFix%s' % (hlt_pfTauLabel, hlt_pfTauSuffix), "chargedIsoPtSumHGCalFix")
+singleID(process.patTaus.tauIDSources, 'hltSelected%sNeutralIsoPtSumHGCalFix%s' % (hlt_pfTauLabel, hlt_pfTauSuffix), "neutralIsoPtSumHGCalFix")
+singleID(process.patTaus.tauIDSources, 'hltSelected%sChargedIsoPtSumdR03HGCalFix%s' % (hlt_pfTauLabel, hlt_pfTauSuffix), "chargedIsoPtSumdR03HGCalFix")
+singleID(process.patTaus.tauIDSources, 'hltSelected%sNeutralIsoPtSumdR03HGCalFix%s' % (hlt_pfTauLabel, hlt_pfTauSuffix), "neutralIsoPtSumdR03HGCalFix")
 containerID(process.patTaus.tauIDSources, 'hlt%sBasicDiscriminators%s' % (hlt_pfTauLabel, hlt_pfTauSuffix), "IDdefinitions", [
     [ "chargedIsoPtSum", "ChargedIsoPtSum" ],
     [ "neutralIsoPtSum", "NeutralIsoPtSum" ],
@@ -179,15 +179,15 @@ containerID(process.patTaus.tauIDSources, 'hlt%sBasicDiscriminators%s' % (hlt_pf
     [ "photonPtSumOutsideSignalCone", "PhotonPtSumOutsideSignalCone" ],
     [ "byCombinedIsolationDeltaBetaCorrRaw3Hits", "ByRawCombinedIsolationDBSumPtCorr3Hits" ]
 ])
-##containerID(process.patTaus.tauIDSources, 'hlt%sBasicDiscriminatorsdR03%s' % (hlt_pfTauLabel, hlt_pfTauSuffix), "IDdefinitions", [
-##    [ "chargedIsoPtSumdR03", "ChargedIsoPtSum" ],
-##    [ "neutralIsoPtSumdR03", "NeutralIsoPtSum" ],
-##    [ "puCorrPtSumdR03", "PUcorrPtSum" ],
-##    [ "neutralIsoPtSumWeightdR03", "NeutralIsoPtSumWeight" ],
-##    [ "footprintCorrectiondR03", "TauFootprintCorrection" ],
-##    [ "photonPtSumOutsideSignalConedR03", "PhotonPtSumOutsideSignalCone" ],
-##    [ "byCombinedIsolationDeltaBetaCorrRaw3HitsdR03", "ByRawCombinedIsolationDBSumPtCorr3Hits" ]
-##])
+containerID(process.patTaus.tauIDSources, 'hlt%sBasicDiscriminatorsdR03%s' % (hlt_pfTauLabel, hlt_pfTauSuffix), "IDdefinitions", [
+    [ "chargedIsoPtSumdR03", "ChargedIsoPtSum" ],
+    [ "neutralIsoPtSumdR03", "NeutralIsoPtSum" ],
+    [ "puCorrPtSumdR03", "PUcorrPtSum" ],
+    [ "neutralIsoPtSumWeightdR03", "NeutralIsoPtSumWeight" ],
+    [ "footprintCorrectiondR03", "TauFootprintCorrection" ],
+    [ "photonPtSumOutsideSignalConedR03", "PhotonPtSumOutsideSignalCone" ],
+    [ "byCombinedIsolationDeltaBetaCorrRaw3HitsdR03", "ByRawCombinedIsolationDBSumPtCorr3Hits" ]
+])
 process.productionSequence += process.makePatTaus
 
 process.selectedPatTaus = cms.EDProducer("MyPATTauSelector",

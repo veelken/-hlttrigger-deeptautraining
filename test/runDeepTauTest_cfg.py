@@ -20,13 +20,13 @@ process.source = cms.Source("PoolSource",
         'file:/home/veelken/Phase2HLT/CMSSW_11_1_0/src/HLTrigger/Phase2HLTPFTaus/test/step3_RAW2DIGI_RECO.root'
     ),
     ##eventsToProcess = cms.untracked.VEventRange(
-    ##    '1:128:18149'
+    ##    '1:128:18039'
     ##) 
 )
 
 ##inputFilePath = '/hdfs/cms/store/user/rdewanje/VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5/HLTConfig_VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5_wOfflineVtx_wDeepTau3/'
 inputFilePath = None
-inputFileNames = [ 'file:/hdfs/cms/store/user/rdewanje/VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5/HLTConfig_VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5_wOfflineVtx_wDeepTau3/200819_143348/0000/step3_RAW2DIGI_RECO_1.root' ]
+inputFileNames = [ 'file:/hdfs/cms/store/user/rdewanje/VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5/HLTConfig_VBFHToTauTau_M125_14TeV_powheg_pythia8_correctedGridpack_tuneCP5_wOfflineVtx_wDeepTau4/200826_185528/0000/step3_RAW2DIGI_RECO_1.root' ]
 processName = "qqH_htt"
 hlt_srcVertices = 'offlinePrimaryVertices'
 hlt_algorithm = "hps"
@@ -129,8 +129,8 @@ deepTauSequence.remove(getattr(process, moduleName_updatedPatTaus))
 # CV: enable debug output for DeepTauId module
 ##moduleName_deepTau_even = "hltDeep%sEven%s" % (hlt_pfTauLabel, hlt_pfTauSuffix)
 ##module_deepTau_even = getattr(process, moduleName_deepTau_even)
-##module_deepTau_even.debug_level = cms.int32(0)
-##module_deepTau_even.save_inputs = cms.bool(False)
+##module_deepTau_even.debug_level = cms.int32(1)
+##module_deepTau_even.save_inputs = cms.bool(True)
 
 moduleName_updatedPatTaus_even = "hltUpdatedPat%ssEven%s" % (hlt_pfTauLabel, hlt_pfTauSuffix)
 process.testDeepTau = cms.EDAnalyzer("DeepTauTest",

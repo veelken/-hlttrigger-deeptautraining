@@ -7,7 +7,7 @@ import time
 
 from HLTrigger.DeepTauTraining.run_command import *
 
-version_rawNtuples = "2020Aug25wHGCalFix"
+version_rawNtuples = "2020Sep01wHGCalFix"
 version_training = "training_v1"
 
 inputDir = os.path.join("/hdfs/local", getpass.getuser(), "Phase2HLT/DeepTauTraining", version_rawNtuples, "raw-tuples")
@@ -20,7 +20,6 @@ inputDir_sample = {
   'qcd_pt80to120'  : os.path.join(inputDir, "qcd_pt80to120"),
   'qcd_pt120to170' : os.path.join(inputDir, "qcd_pt120to170"),
   'qcd_pt170to300' : os.path.join(inputDir, "qcd_pt170to300"),
-  'qcd_pt300to470' : os.path.join(inputDir, "qcd_pt300to470"),
   'dy_mass10to50'  : os.path.join(inputDir, "dy_mass10to50"),
   'dy_massGt50'    : os.path.join(inputDir, "dy_massGt50"),
   'w'              : os.path.join(inputDir, "w")
@@ -74,7 +73,6 @@ regexp_sample = {
   'qcd_pt80to120'  : "[a-zA-Z0-9_/:.-]*produceDeepTau_rawNtuple_[a-zA-Z0-9_/:.-]+.root",
   'qcd_pt120to170' : "[a-zA-Z0-9_/:.-]*produceDeepTau_rawNtuple_[a-zA-Z0-9_/:.-]+.root",
   'qcd_pt170to300' : "[a-zA-Z0-9_/:.-]*produceDeepTau_rawNtuple_[a-zA-Z0-9_/:.-]+.root",
-  'qcd_pt300to470' : "[a-zA-Z0-9_/:.-]*produceDeepTau_rawNtuple_[a-zA-Z0-9_/:.-]+.root",  
   'dy_mass10to50'  : "[a-zA-Z0-9_/:.-]*produceDeepTau_rawNtuple_[a-zA-Z0-9_/:.-]+.root",
   'dy_massGt50'    : "[a-zA-Z0-9_/:.-]*produceDeepTau_rawNtuple_[a-zA-Z0-9_/:.-]+.root",
   'w'              : "[a-zA-Z0-9_/:.-]*produceDeepTau_rawNtuple_[a-zA-Z0-9_/:.-]+.root"

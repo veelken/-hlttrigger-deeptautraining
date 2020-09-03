@@ -25,10 +25,10 @@ print("")
 # CV: list of CMSSW input variables taken from the enums defined in RecoTauTag/RecoTau/plugins/DeepTauId.cc
 inputVariableNames_tau_cmssw = [  
   'rho', 'tau_pt', 'tau_eta', 'tau_phi', 'tau_mass', 'tau_E_over_pt', 'tau_charge',
-  'tau_n_charged_prongs', 'tau_n_neutral_prongs', 'chargedIsoPtSum',
-  'chargedIsoPtSumdR03_over_dR05', 'footprintCorrection', 'neutralIsoPtSum',
+  'tau_n_charged_prongs', 'tau_n_neutral_prongs', 'chargedIsoPtSumHGCalFix',
+  'chargedIsoPtSumdR03_over_dR05HGCalFix', 'footprintCorrection', 'neutralIsoPtSumHGCalFix',
   'neutralIsoPtSumWeight_over_neutralIsoPtSum', 'neutralIsoPtSumWeightdR03_over_neutralIsoPtSum',
-  'neutralIsoPtSumdR03_over_dR05', 'photonPtSumOutsideSignalCone', 'puCorrPtSum',
+  'neutralIsoPtSumdR03_over_dR05HGCalFix', 'photonPtSumOutsideSignalCone', 'puCorrPtSum',
   'tau_dxy_valid', 'tau_dxy', 'tau_dxy_sig', 
   'tau_ip3d_valid', 'tau_ip3d', 'tau_ip3d_sig', 'tau_dz', 'tau_dz_sig_valid', 'tau_dz_sig',
   'tau_flightLength_x', 'tau_flightLength_y', 'tau_flightLength_z', 'tau_flightLength_sig',
@@ -136,10 +136,10 @@ def compVars(key, vars_hdf5, varNames_hdf5, vars_cmssw, varNames_cmssw):
         raise ValueError("Mismatch in number of input variables: hdf5 = %i, CMSSSW = %i" % (len(varNames_hdf5), len(varNames_cmssw)))
     if not key in vars_hdf5.keys():
         raise ValueError("Given key = '%s' not found in hdf5 input variables. Valid keys = %s" % (key, vars_hdf5.keys()))
-    vars_hdf5 = vars_hdf5[key][0]
+    vars_hdf5 = vars_hdf5[key]
     if not key in vars_cmssw.keys():
         raise ValueError("Given key = '%s' not found in CMSSW input variables. Valid keys = %s" % (key, vars_cmssw.keys()))
-    vars_cmssw = vars_cmssw[key][0]
+    vars_cmssw = vars_cmssw[key]
     if len(vars_hdf5) != len(varNames_hdf5):
         raise ValueError("Array of hdf5 input variables has wrong dimension: expected = %i, got = %i" % (len(varNames_hdf5), len(vars_hdf5[key])))
     if len(vars_cmssw) != len(varNames_cmssw):
@@ -164,10 +164,10 @@ def compVars_grid(key, vars_hdf5, varNames_hdf5, vars_cmssw, varNames_cmssw):
         raise ValueError("Mismatch in number of input variables: hdf5 = %i, CMSSSW = %i" % (len(varNames_hdf5), len(varNames_cmssw))) 
     if not key in vars_hdf5.keys():
         raise ValueError("Given key = '%s' not found in hdf5 input variables. Valid keys = %s" % (key, vars_hdf5.keys()))
-    vars_hdf5 = vars_hdf5[key][0]
+    vars_hdf5 = vars_hdf5[key]
     if not key in vars_cmssw.keys():
         raise ValueError("Given key = '%s' not found in CMSSW input variables. Valid keys = %s" % (key, vars_cmssw.keys()))
-    vars_cmssw = vars_cmssw[key][0]
+    vars_cmssw = vars_cmssw[key]
     n_eta = None
     n_phi = None
     if key.find("input_inner") != -1:
