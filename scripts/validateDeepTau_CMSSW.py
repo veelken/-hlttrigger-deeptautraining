@@ -49,8 +49,6 @@ for index, row in df_cmssw.iterrows():
     print("index = %i: result = %s" % (index, result))
 print("")
 
-##raise ValueError("STOP.")
-
 acc = 1e-4
 bins = np.linspace(-acc, acc, num=100)
 var_hdf5 = 'deepId_tau_vs_jet'
@@ -60,7 +58,7 @@ print("x = %s" % x)
 for index, row in df_cmssw.iterrows():
     result = ( int(row['run']), int(row['lumi']), int(row['evt']), row['pt'], row['eta'], row['phi'], x[index] )
     print("index = %i: diff = %s" % (index, result))
-##print('max: ', np.abs(x).max())
-##print('within acc:', np.count_nonzero(np.abs(x) < acc)/x.shape[0])
-##plt.hist(x, bins=bins)
-##plt.xlim([bins[0], bins[-1]]);
+print('max: ', np.abs(x).max())
+print('within acc:', np.count_nonzero(np.abs(x) < acc)/x.shape[0])
+plt.hist(x, bins=bins)
+plt.xlim([bins[0], bins[-1]]);

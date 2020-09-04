@@ -131,7 +131,9 @@ inputFile_cmssw = open(inputFileName_cmssw, "r")
 inputVariables_cmssw = json.load(inputFile_cmssw)
 inputFile_cmssw.close()
 
-def compVars(key, vars_hdf5, varNames_hdf5, vars_cmssw, varNames_cmssw):
+numDifferences = 0
+
+def compVars(numDifferences, key, vars_hdf5, varNames_hdf5, vars_cmssw, varNames_cmssw):
     if len(varNames_hdf5) != len(varNames_cmssw):
         raise ValueError("Mismatch in number of input variables: hdf5 = %i, CMSSSW = %i" % (len(varNames_hdf5), len(varNames_cmssw)))
     if not key in vars_hdf5.keys():
@@ -155,11 +157,13 @@ def compVars(key, vars_hdf5, varNames_hdf5, vars_cmssw, varNames_cmssw):
             label_hdf5 = "(%s)" % varNames_hdf5[idx_var]
             label_cmssw = "(%s)" % varNames_cmssw[idx_var]
             print("Mismatch in variable #%i: hdf5 %s = %1.4f, CMSSW %s = %1.4f" % (idx_var, label_hdf5, var_hdf5, label_cmssw, var_cmssw))
+            numDifferences += 1
     print(" Done.")
+    return numDifferences
 
-compVars("input_tau", inputVariables_hdf5, inputVariableNames_tau_hdf5, inputVariables_cmssw, inputVariableNames_tau_cmssw)
+numDifferences = compVars(numDifferences, "input_tau", inputVariables_hdf5, inputVariableNames_tau_hdf5, inputVariables_cmssw, inputVariableNames_tau_cmssw)
 
-def compVars_grid(key, vars_hdf5, varNames_hdf5, vars_cmssw, varNames_cmssw):
+def compVars_grid(numDifferences, key, vars_hdf5, varNames_hdf5, vars_cmssw, varNames_cmssw):
     if len(varNames_hdf5) != len(varNames_cmssw):
         raise ValueError("Mismatch in number of input variables: hdf5 = %i, CMSSSW = %i" % (len(varNames_hdf5), len(varNames_cmssw))) 
     if not key in vars_hdf5.keys():
@@ -205,12 +209,16 @@ def compVars_grid(key, vars_hdf5, varNames_hdf5, vars_cmssw, varNames_cmssw):
                     eta = idx_eta - n_eta/2
                     phi = idx_phi - n_phi/2
                     print("Mismatch in variable #%i @ (eta=%i, phi=%i): hdf5 %s = %1.4f, CMSSW %s = %1.4f" % (idx_var, eta, phi, label_hdf5, var_hdf5, label_cmssw, var_cmssw))
+                    numDifferences += 1
     print(" Done.")
+    return numDifferences
 
-compVars_grid("input_inner_egamma",  inputVariables_hdf5, inputVariableNames_egamma_hdf5,  inputVariables_cmssw, inputVariableNames_egamma_cmssw)
-compVars_grid("input_inner_muon",    inputVariables_hdf5, inputVariableNames_muon_hdf5,    inputVariables_cmssw, inputVariableNames_muon_cmssw)
-compVars_grid("input_inner_hadrons", inputVariables_hdf5, inputVariableNames_hadrons_hdf5, inputVariables_cmssw, inputVariableNames_hadrons_cmssw)
+numDifferences = compVars_grid(numDifferences, "input_inner_egamma",  inputVariables_hdf5, inputVariableNames_egamma_hdf5,  inputVariables_cmssw, inputVariableNames_egamma_cmssw)
+numDifferences = compVars_grid(numDifferences, "input_inner_muon",    inputVariables_hdf5, inputVariableNames_muon_hdf5,    inputVariables_cmssw, inputVariableNames_muon_cmssw)
+numDifferences = compVars_grid(numDifferences, "input_inner_hadrons", inputVariables_hdf5, inputVariableNames_hadrons_hdf5, inputVariables_cmssw, inputVariableNames_hadrons_cmssw)
 
-compVars_grid("input_outer_egamma",  inputVariables_hdf5, inputVariableNames_egamma_hdf5,  inputVariables_cmssw, inputVariableNames_egamma_cmssw)
-compVars_grid("input_outer_muon",    inputVariables_hdf5, inputVariableNames_muon_hdf5,    inputVariables_cmssw, inputVariableNames_muon_cmssw)
-compVars_grid("input_outer_hadrons", inputVariables_hdf5, inputVariableNames_hadrons_hdf5, inputVariables_cmssw, inputVariableNames_hadrons_cmssw)
+numDifferences = compVars_grid(numDifferences, "input_outer_egamma",  inputVariables_hdf5, inputVariableNames_egamma_hdf5,  inputVariables_cmssw, inputVariableNames_egamma_cmssw)
+numDifferences = compVars_grid(numDifferences, "input_outer_muon",    inputVariables_hdf5, inputVariableNames_muon_hdf5,    inputVariables_cmssw, inputVariableNames_muon_cmssw)
+numDifferences = compVars_grid(numDifferences, "input_outer_hadrons", inputVariables_hdf5, inputVariableNames_hadrons_hdf5, inputVariables_cmssw, inputVariableNames_hadrons_cmssw)
+
+print("Found %i differences." % numDifferences)
